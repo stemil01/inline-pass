@@ -1,3 +1,3 @@
 # LLVM Inline Pass
 
-This is a LLVM pass for function inlining done as a project for Compiler Construction course.
+An LLVM pass for function inlining, created as a Compiler Construction course project.
