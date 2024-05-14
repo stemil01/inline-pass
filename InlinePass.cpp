@@ -22,7 +22,6 @@ struct InlinePass : public ModulePass {
         CallFunctionGraph *CallGraph = new CallFunctionGraph(MainFunction);
         CallGraph->createCallGraph();
         CallGraph->findRecursiveCalls();
-        CallGraph->print();
 
         bool IRChanged = false;
         std::vector<CallInst *> CallInstructions;
@@ -48,7 +47,6 @@ struct InlinePass : public ModulePass {
         } while (!CallInstructions.empty());
 
         CallGraph->createCallGraph();
-        CallGraph->print();
         if (CallGraph->removeUnusedFunctions()) {
             IRChanged = true;
         }
