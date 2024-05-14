@@ -18,8 +18,10 @@ class CallFunctionGraph {
 public:
     CallFunctionGraph(Function *EntryFunction);
 
+    void createCallGraph();
     void findRecursiveCalls();
     bool isRecursive(Function *F);
+    bool removeUnusedFunctions();
 
     // This function is used for testing purposes only
     void print();
@@ -28,8 +30,9 @@ private:
     std::unordered_map<Function *, std::vector<Function *>> m_CallGraph;
     Function *m_EntryFunction;
     std::unordered_set<Function *> m_RecursiveFunctions;
+    std::unordered_set<Function *> m_UsedFunctions;
 
-    void createCallGraph(Function *F, std::unordered_set<Function *> &VisitedFunctions);
+    void createCallGraph(Function *F);
     void findRecursiveCalls(Function *F, std::unordered_set<Function *> &Visited,
                             std::vector<Function *> &Path,std::unordered_set<Function *> &InPath);
 };

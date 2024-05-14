@@ -1,13 +1,17 @@
 #include "CallFunctionGraph.h"
 
 CallFunctionGraph::CallFunctionGraph(Function *EntryFunction)
-    : m_EntryFunction(EntryFunction) {
-    std::unordered_set<Function *> VisitedFunctions;
-    createCallGraph(m_EntryFunction, VisitedFunctions);
+    : m_EntryFunction(EntryFunction) {}
+
+void CallFunctionGraph::createCallGraph() {
+    m_CallGraph.clear();
+    m_UsedFunctions.clear();
+
+    createCallGraph(m_EntryFunction);
 }
 
-void CallFunctionGraph::createCallGraph(Function *F, std::unordered_set<Function *> &VisitedFunctions) {
-    VisitedFunctions.insert(F);
+void CallFunctionGraph::createCallGraph(Function *F) {
+    m_UsedFunctions.insert(F);
 
     for (BasicBlock &BB : *F) {
         for (Instruction &I : BB) {
@@ -15,8 +19,8 @@ void CallFunctionGraph::createCallGraph(Function *F, std::unordered_set<Function
                 Function *CalledFunction = CallInstr->getCalledFunction();
 
                 m_CallGraph[F].push_back(CalledFunction);
-                if (VisitedFunctions.find(CalledFunction) == VisitedFunctions.end()) {
-                    createCallGraph(CalledFunction, VisitedFunctions);
+                if (m_UsedFunctions.find(CalledFunction) == m_UsedFunctions.end()) {
+                    createCallGraph(CalledFunction);
                 }
             }
         }
@@ -54,6 +58,21 @@ void CallFunctionGraph::findRecursiveCalls() {
 
 bool CallFunctionGraph::isRecursive(Function *F) {
     return m_RecursiveFunctions.find(F) != m_RecursiveFunctions.end();
+}
+
+bool CallFunctionGraph::removeUnusedFunctions() {
+    std::vector<Function *> UnusedFunctions;
+    for (Function &F : *m_EntryFunction->getParent()) {
+        if (m_UsedFunctions.find(&F) == m_UsedFunctions.end()) {
+            UnusedFunctions.push_back(&F);
+        }
+    }
+
+    for (Function *F : UnusedFunctions) {
+        F->eraseFromParent();
+    }
+
+    return !UnusedFunctions.empty();
 }
 
 void CallFunctionGraph::print() {

@@ -11,6 +11,7 @@
 
 using namespace llvm;
 
+// Removing alloca instructions at the beginning of a function call?
 namespace {
 struct InlinePass : public ModulePass {
     static char ID;
@@ -19,7 +20,9 @@ struct InlinePass : public ModulePass {
     bool runOnModule(Module &M) override {
         Function *MainFunction = M.getFunction("main");
         CallFunctionGraph *CallGraph = new CallFunctionGraph(MainFunction);
+        CallGraph->createCallGraph();
         CallGraph->findRecursiveCalls();
+        CallGraph->print();
 
         bool IRChanged = false;
         std::vector<CallInst *> CallInstructions;
@@ -43,6 +46,12 @@ struct InlinePass : public ModulePass {
                 }
             }
         } while (!CallInstructions.empty());
+
+        CallGraph->createCallGraph();
+        CallGraph->print();
+        if (CallGraph->removeUnusedFunctions()) {
+            IRChanged = true;
+        }
 
         delete CallGraph;
 
