@@ -33,3 +33,7 @@ Moreover, it keeps track of unused functions (functions that cannot be reached f
 ## Examples and results
 
 TODO
+
+## Potential Improvements
+
+TODO
