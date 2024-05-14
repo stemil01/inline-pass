@@ -19,7 +19,7 @@ struct InlinePass : public ModulePass {
     bool runOnModule(Module &M) override {
         Function *MainFunction = M.getFunction("main");
         CallFunctionGraph *CallGraph = new CallFunctionGraph(MainFunction);
-        CallGraph->print();
+        CallGraph->findRecursiveCalls();
 
         bool IRChanged = false;
         std::vector<CallInst *> CallInstructions;
@@ -36,7 +36,7 @@ struct InlinePass : public ModulePass {
             for (BasicBlock &BB : *MainFunction) {
                 for (Instruction &I : BB) {
                     if (CallInst *CallInstr = dyn_cast<CallInst>(&I)) {
-                        if (Inline::shouldInline(CallInstr->getCalledFunction())) {
+                        if (Inline::shouldInline(CallInstr->getCalledFunction(), CallGraph)) {
                             CallInstructions.push_back(CallInstr);
                         }
                     }

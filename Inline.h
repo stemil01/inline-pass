@@ -9,11 +9,12 @@
 #include "llvm/Transforms/Utils/BasicBlockUtils.h"
 
 #include <unordered_map>
+#include "CallFunctionGraph.h"
 
 using namespace llvm;
 
 namespace Inline {
-    bool shouldInline(const Function *F);
+    bool shouldInline(Function *F, CallFunctionGraph *CallGraph);
     void copyFunctionBody(Function *F, CallInst *CallInstr, std::unordered_map<Value *, Value *>& FunctionArgumentsMap);
     bool inlineFunction(CallInst *CallInstr);
 }

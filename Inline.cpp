@@ -1,7 +1,7 @@
 #include "Inline.h"
 
-bool Inline::shouldInline(const Function *F) {
-    return !F->isDeclaration();
+bool Inline::shouldInline(Function *F, CallFunctionGraph *CallGraph) {
+    return !F->isDeclaration() && !CallGraph->isRecursive(F);
 }
 
 void Inline::copyFunctionBody(Function *F, CallInst *CallInstr,
