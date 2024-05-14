@@ -20,6 +20,16 @@ In short, to run the pass, the following is required:
 
 Modified IR should be in the `result.ll` file.
 
+## Project's structure
+
+The pass has two parts: the inlining module and the call graph class.
+
+- The inlining module's primary purpose is to copy the function body of the called function and to position it at the place of the call instruction. 
+The associated nececcary remapping of instructions is handled here.
+- Call Graph class is a class representing a graph of functions in which caller is connected a callee.
+It is used to determine whether cycle exists in the module (for instance if function f calls g, g calls h, and h calls f) and ignores such functions for inlining.
+Moreover, it keeps track of unused functions (functions that cannot be reached from the `main` function) and removes it from the module.
+
 ## Examples and results
 
 TODO
