@@ -5,6 +5,7 @@
 #include "llvm/IR/Instructions.h"
 
 #include "Inline.h"
+#include "CallFunctionGraph.h"
 
 #include "llvm/IR/LegacyPassManager.h"
 
@@ -17,6 +18,8 @@ struct InlinePass : public ModulePass {
 
     bool runOnModule(Module &M) override {
         Function *MainFunction = M.getFunction("main");
+        CallFunctionGraph *CallGraph = new CallFunctionGraph(MainFunction);
+        CallGraph->print();
 
         bool IRChanged = false;
         std::vector<CallInst *> CallInstructions;
@@ -40,6 +43,8 @@ struct InlinePass : public ModulePass {
                 }
             }
         } while (!CallInstructions.empty());
+
+        delete CallGraph;
 
         return IRChanged;
     }
