@@ -15,8 +15,13 @@ using namespace llvm;
 
 namespace Inline {
     bool shouldInline(Function *F, CallFunctionGraph *CallGraph);
-    void copyFunctionBody(Function *F, CallInst *CallInstr, std::unordered_map<Value *, Value *>& FunctionArgumentsMap);
     bool inlineFunction(CallInst *CallInstr);
+
+    Instruction *findFirstNonAlloca(Function *F);
+    void resolveAllocas(Function *Callee, Instruction *CallInstr, std::unordered_map<Value *, Value *> &AllocaMap);
+    void copyFunctionBody(Function *F, CallInst *CallInstr,
+                            std::unordered_map<Value *, Value *>& FunctionArgumentsMap,
+                            std::unordered_map<Value *, Value *> &ValuesMap);
 }
 
 #endif

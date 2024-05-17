@@ -16,11 +16,11 @@ void CallFunctionGraph::createCallGraph(Function *F) {
     for (BasicBlock &BB : *F) {
         for (Instruction &I : BB) {
             if (CallInst *CallInstr = dyn_cast<CallInst>(&I)) {
-                Function *CalledFunction = CallInstr->getCalledFunction();
+                Function *Callee = CallInstr->getCalledFunction();
 
-                m_CallGraph[F].push_back(CalledFunction);
-                if (m_UsedFunctions.find(CalledFunction) == m_UsedFunctions.end()) {
-                    createCallGraph(CalledFunction);
+                m_CallGraph[F].push_back(Callee);
+                if (m_UsedFunctions.find(Callee) == m_UsedFunctions.end()) {
+                    createCallGraph(Callee);
                 }
             }
         }
@@ -34,15 +34,15 @@ void CallFunctionGraph::findRecursiveCalls(Function *F, std::unordered_set<Funct
     Path.push_back(F);
     InPath.insert(F);
 
-    for (Function *CalledFunction : m_CallGraph[F]) {
-        if (InPath.find(CalledFunction) != InPath.end()) {
-            for (size_t i = Path.size() - 1; Path[i] != CalledFunction; i--) {
+    for (Function *Callee : m_CallGraph[F]) {
+        if (InPath.find(Callee) != InPath.end()) {
+            for (size_t i = Path.size() - 1; Path[i] != Callee; i--) {
                 m_RecursiveFunctions.insert(Path[i]);
             }
-            m_RecursiveFunctions.insert(CalledFunction);
+            m_RecursiveFunctions.insert(Callee);
         }
-        else if (Visited.find(CalledFunction) == Visited.end()) {
-            findRecursiveCalls(CalledFunction, Visited, Path, InPath);
+        else if (Visited.find(Callee) == Visited.end()) {
+            findRecursiveCalls(Callee, Visited, Path, InPath);
         }
     }
 

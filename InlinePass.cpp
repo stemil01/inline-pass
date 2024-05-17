@@ -11,7 +11,6 @@
 
 using namespace llvm;
 
-// Removing alloca instructions at the beginning of a function call?
 namespace {
 struct InlinePass : public ModulePass {
     static char ID;
