@@ -29,11 +29,3 @@ The associated nececcary remapping of instructions is handled here.
 - Call Graph class is a class representing a graph of functions in which caller is connected a callee.
 It is used to determine whether cycle exists in the module (for instance if function f calls g, g calls h, and h calls f) and ignores such functions for inlining.
 Moreover, it keeps track of unused functions (functions that cannot be reached from the `main` function) and removes it from the module.
-
-## Examples and results
-
-TODO
-
-## Potential Improvements
-
-TODO

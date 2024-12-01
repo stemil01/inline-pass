@@ -26,7 +26,6 @@ struct InlinePass : public ModulePass {
         std::vector<CallInst *> CallInstructions;
 
         do {
-            // What if inlining changes another call intruction?
             for (CallInst *CallInstr : CallInstructions) {
                 if (Inline::inlineFunction(CallInstr)) {
                     IRChanged = true;
